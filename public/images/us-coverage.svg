@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 620" role="img" aria-label="SpeedX United States coverage map with gateway cities">
+  <defs>
+    <linearGradient id="land" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a4a73"/>
+      <stop offset="55%" stop-color="#123a5c"/>
+      <stop offset="100%" stop-color="#0c2a45"/>
+    </linearGradient>
+    <linearGradient id="pin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#bae6fd"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="980" height="620" rx="28" fill="#07101c"/>
+
+  <g opacity="0.35" stroke="rgba(125,211,252,0.08)" stroke-width="1" fill="none">
+    <path d="M40 120H940M40 220H940M40 320H940M40 420H940M40 520H940"/>
+    <path d="M120 40V580M220 40V580M320 40V580M420 40V580M520 40V580M620 40V580M720 40V580M820 40V580"/>
+  </g>
+
+  <!-- Recognizable contiguous USA outline -->
+  <path
+    fill="url(#land)"
+    stroke="rgba(56,189,248,0.45)"
+    stroke-width="2.2"
+    stroke-linejoin="round"
+    d="M168 168
+       L205 145 L248 138 L295 128 L348 120 L402 118 L455 122 L508 118 L560 124
+       L612 130 L662 138 L708 132 L752 140 L790 158 L818 180 L835 208
+       L842 242 L836 278 L818 302 L792 318 L778 348 L768 382 L752 412
+       L728 438 L698 452 L662 460 L622 462 L582 456 L548 448 L520 452
+       L492 468 L468 488 L442 502 L412 508 L386 498 L368 472 L358 448
+       L348 422 L328 408 L298 400 L268 388 L242 372 L222 348 L208 318
+       L196 288 L188 254 L192 220 L200 192 Z
+       M178 312 L152 324 L138 352 L148 378 L172 386 L192 368 L198 338 Z
+       M248 448 L232 470 L242 498 L272 504 L296 482 L284 456 Z
+       M718 468 L702 492 L712 518 L742 522 L760 498 L748 474 Z"
+  />
+
+  <!-- Florida extension -->
+  <path
+    fill="url(#land)"
+    stroke="rgba(56,189,248,0.45)"
+    stroke-width="2"
+    d="M742 448 L758 470 L772 508 L768 542 L748 558 L728 542 L732 508 L724 478 Z"
+  />
+
+  <!-- Alaska inset -->
+  <g transform="translate(56,470)">
+    <path fill="#143552" stroke="rgba(56,189,248,0.35)" stroke-width="1.5"
+      d="M8 48 L36 18 L78 10 L118 22 L138 48 L122 78 L78 88 L32 74 Z"/>
+    <text x="72" y="112" text-anchor="middle" fill="#94a3b8" font-family="Sora,system-ui,sans-serif" font-size="12" font-weight="600">Alaska</text>
+  </g>
+
+  <!-- Hawaii inset -->
+  <g transform="translate(200,520)">
+    <circle cx="12" cy="14" r="6" fill="#143552" stroke="rgba(56,189,248,0.35)"/>
+    <circle cx="32" cy="22" r="5" fill="#143552" stroke="rgba(56,189,248,0.35)"/>
+    <circle cx="50" cy="14" r="4" fill="#143552" stroke="rgba(56,189,248,0.35)"/>
+    <text x="32" y="48" text-anchor="middle" fill="#94a3b8" font-family="Sora,system-ui,sans-serif" font-size="12" font-weight="600">Hawaii</text>
+  </g>
+
+  <!-- Puerto Rico covered -->
+  <g transform="translate(790,510)">
+    <ellipse cx="48" cy="20" rx="46" ry="16" fill="#1a567f" stroke="#38bdf8" stroke-width="1.8"/>
+    <text x="48" y="24" text-anchor="middle" fill="#e0f2fe" font-family="Sora,system-ui,sans-serif" font-size="11" font-weight="700">Puerto Rico</text>
+    <text x="48" y="54" text-anchor="middle" fill="#7dd3fc" font-family="DM Sans,system-ui,sans-serif" font-size="11">Covered</text>
+  </g>
+
+  <!-- Washington D.C. marker note near EWR/ATL corridor -->
+  <g transform="translate(770,280)">
+    <rect x="-34" y="-12" width="68" height="22" rx="11" fill="rgba(56,189,248,0.12)" stroke="rgba(56,189,248,0.35)"/>
+    <text x="0" y="3" text-anchor="middle" fill="#7dd3fc" font-family="Sora,system-ui,sans-serif" font-size="10" font-weight="700">D.C. covered</text>
+  </g>
+
+  <!-- Gateways -->
+  <g font-family="Sora,system-ui,sans-serif">
+    <!-- SFO -->
+    <g transform="translate(148,278)" filter="url(#glow)">
+      <circle r="16" fill="rgba(56,189,248,0.16)"/>
+      <circle r="7.5" fill="url(#pin)" stroke="#f0f9ff" stroke-width="1.6"/>
+      <circle r="2.3" fill="#fff"/>
+      <text x="14" y="-8" fill="#e0f2fe" font-size="13" font-weight="700">SFO</text>
+      <text x="14" y="8" fill="#94a3b8" font-size="10">San Francisco</text>
+    </g>
+    <!-- LAX -->
+    <g transform="translate(168,352)" filter="url(#glow)">
+      <circle r="16" fill="rgba(56,189,248,0.16)"/>
+      <circle r="7.5" fill="url(#pin)" stroke="#f0f9ff" stroke-width="1.6"/>
+      <circle r="2.3" fill="#fff"/>
+      <text x="14" y="-8" fill="#e0f2fe" font-size="13" font-weight="700">LAX</text>
+      <text x="14" y="8" fill="#94a3b8" font-size="10">Los Angeles</text>
+    </g>
+    <!-- DFW -->
+    <g transform="translate(428,355)" filter="url(#glow)">
+      <circle r="16" fill="rgba(56,189,248,0.16)"/>
+      <circle r="7.5" fill="url(#pin)" stroke="#f0f9ff" stroke-width="1.6"/>
+      <circle r="2.3" fill="#fff"/>
+      <text x="14" y="-8" fill="#e0f2fe" font-size="13" font-weight="700">DFW</text>
+      <text x="14" y="8" fill="#94a3b8" font-size="10">Dallas–Fort Worth</text>
+    </g>
+    <!-- IAH -->
+    <g transform="translate(458,418)" filter="url(#glow)">
+      <circle r="16" fill="rgba(56,189,248,0.16)"/>
+      <circle r="7.5" fill="url(#pin)" stroke="#f0f9ff" stroke-width="1.6"/>
+      <circle r="2.3" fill="#fff"/>
+      <text x="14" y="-8" fill="#e0f2fe" font-size="13" font-weight="700">IAH</text>
+      <text x="14" y="8" fill="#94a3b8" font-size="10">Houston</text>
+    </g>
+    <!-- ORD -->
+    <g transform="translate(575,228)" filter="url(#glow)">
+      <circle r="16" fill="rgba(56,189,248,0.16)"/>
+      <circle r="7.5" fill="url(#pin)" stroke="#f0f9ff" stroke-width="1.6"/>
+      <circle r="2.3" fill="#fff"/>
+      <text x="14" y="-8" fill="#e0f2fe" font-size="13" font-weight="700">ORD</text>
+      <text x="14" y="8" fill="#94a3b8" font-size="10">Chicago</text>
+    </g>
+    <!-- ATL -->
+    <g transform="translate(682,355)" filter="url(#glow)">
+      <circle r="16" fill="rgba(56,189,248,0.16)"/>
+      <circle r="7.5" fill="url(#pin)" stroke="#f0f9ff" stroke-width="1.6"/>
+      <circle r="2.3" fill="#fff"/>
+      <text x="-14" y="-8" text-anchor="end" fill="#e0f2fe" font-size="13" font-weight="700">ATL</text>
+      <text x="-14" y="8" text-anchor="end" fill="#94a3b8" font-size="10">Atlanta</text>
+    </g>
+    <!-- EWR -->
+    <g transform="translate(808,218)" filter="url(#glow)">
+      <circle r="16" fill="rgba(56,189,248,0.16)"/>
+      <circle r="7.5" fill="url(#pin)" stroke="#f0f9ff" stroke-width="1.6"/>
+      <circle r="2.3" fill="#fff"/>
+      <text x="-14" y="-8" text-anchor="end" fill="#e0f2fe" font-size="13" font-weight="700">EWR</text>
+      <text x="-14" y="8" text-anchor="end" fill="#94a3b8" font-size="10">Newark</text>
+    </g>
+    <!-- MIA -->
+    <g transform="translate(752,520)" filter="url(#glow)">
+      <circle r="16" fill="rgba(56,189,248,0.16)"/>
+      <circle r="7.5" fill="url(#pin)" stroke="#f0f9ff" stroke-width="1.6"/>
+      <circle r="2.3" fill="#fff"/>
+      <text x="-14" y="-8" text-anchor="end" fill="#e0f2fe" font-size="13" font-weight="700">MIA</text>
+      <text x="-14" y="8" text-anchor="end" fill="#94a3b8" font-size="10">Miami</text>
+    </g>
+  </g>
+
+  <text x="40" y="46" fill="#7dd3fc" font-family="Sora,system-ui,sans-serif" font-size="13" font-weight="700" letter-spacing="0.14em">SPEEDX U.S. COVERAGE</text>
+  <text x="40" y="70" fill="#94a3b8" font-family="DM Sans,system-ui,sans-serif" font-size="13">43 states · Washington, D.C. · Puerto Rico · 8 entry gateways</text>
+</svg>

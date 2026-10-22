@@ -23,6 +23,11 @@ const nextConfig: NextConfig = {
         destination: "/",
         permanent: true,
       },
+      {
+        source: "/sitemap.xml",
+        destination: "/sitemap.index.xml",
+        permanent: false,
+      },
     ];
   },
 };

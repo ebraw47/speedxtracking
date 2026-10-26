@@ -1027,6 +1027,10 @@ a:hover {
 }
 
 /* Discovery call form */
+#discovery {
+  scroll-margin-top: 5.5rem;
+}
+
 .discovery {
   padding: 3.5rem 0 4rem;
   background:

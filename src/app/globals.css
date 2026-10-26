@@ -578,13 +578,19 @@ a:hover {
     justify-self: start;
   }
 
+  .hero-discovery-cta {
+    grid-column: 1;
+    grid-row: 4;
+    justify-self: start;
+  }
+
   .hero-stat {
     text-align: left;
   }
 
   .hero-note {
     grid-column: 1;
-    grid-row: 4;
+    grid-row: 5;
     order: unset;
     text-align: left;
     justify-self: start;
@@ -744,6 +750,20 @@ a:hover {
   color: #041018 !important;
 }
 
+.hero-discovery-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 1.15rem;
+  text-decoration: none;
+}
+
+.hero-discovery-arrow {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex-shrink: 0;
+}
+
 .hero-stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -865,6 +885,12 @@ a:hover {
     background:
       linear-gradient(165deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
       rgba(7, 11, 20, 0.32);
+  }
+
+  .hero-discovery-cta {
+    order: 4;
+    margin-top: 0.85rem;
+    margin-inline: auto;
   }
 
   .hero-stats {

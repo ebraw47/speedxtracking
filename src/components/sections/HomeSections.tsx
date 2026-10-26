@@ -484,7 +484,7 @@ export default function HomeSections() {
                 <h3>Enter the tracking number</h3>
                 <p>
                   Copy the ID exactly and paste it into the tracking box at the{" "}
-                  <a href="#top">top of this page</a> — no spaces or missing
+                  <Link href="/">home page</Link> — no spaces or missing
                   characters.
                 </p>
               </div>
@@ -504,13 +504,13 @@ export default function HomeSections() {
                 <p>
                   In Transit, Out for Delivery, Delivered, Pending, or Exception
                   — know what each scan usually means. See{" "}
-                  <a href="#status">status meanings</a>.
+                  <Link href="/status">status meanings</Link>.
                 </p>
               </div>
             </article>
           </div>
           <p className="card-link" style={{ marginTop: "1.5rem" }}>
-            <a href="#top">Track a package now →</a>
+            <Link href="/">Track a package now →</Link>
           </p>
         </div>
       </section>
@@ -702,7 +702,7 @@ export default function HomeSections() {
                 <li>Service-first attitude</li>
               </ul>
               <p className="card-link">
-                <a href="#discovery">Book a discovery call →</a>
+                <Link href="/discovery">Book a discovery call →</Link>
               </p>
             </article>
           </div>

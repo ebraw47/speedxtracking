@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import TrackForm from "@/components/TrackForm";
 import HomeSections from "@/components/sections/HomeSections";
 
@@ -60,8 +61,8 @@ export default function HomePage() {
             </div>
           </div>
 
-          <a
-            href="#discovery"
+          <Link
+            href="/discovery"
             className="btn-discovery btn-discovery-hero hero-discovery-cta"
           >
             Book a discovery call
@@ -79,7 +80,7 @@ export default function HomePage() {
                 strokeLinejoin="round"
               />
             </svg>
-          </a>
+          </Link>
         </div>
       </section>
 

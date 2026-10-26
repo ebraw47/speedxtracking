@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import TrackForm from "@/components/TrackForm";
+import HomeSections from "@/components/sections/HomeSections";
 
 export const metadata: Metadata = {
   title: "Track Your Package Online",
@@ -62,59 +62,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="page-main">
-        <div className="container">
-          <div className="section-head">
-            <h2>Explore SpeedX</h2>
-            <p>
-              Learn about the network, ship with us, check coverage, or browse
-              common questions.
-            </p>
-          </div>
-          <div className="feature-grid feature-grid-2">
-            <article className="feature-card">
-              <h3>About SpeedX</h3>
-              <p>
-                Founded in 2022 — last-mile delivery across 12,000+ U.S. zip
-                codes with 100M+ parcels delivered.
-              </p>
-              <p className="card-link">
-                <Link href="/about">About Us →</Link>
-              </p>
-            </article>
-            <article className="feature-card">
-              <h3>Ship With Us</h3>
-              <p>
-                Solutions for retailers, 3PLs, and cross-border shippers —
-                next-day, two-day, and customs clearance.
-              </p>
-              <p className="card-link">
-                <Link href="/ship">Ship With Us →</Link>
-              </p>
-            </article>
-            <article className="feature-card">
-              <h3>U.S. Coverage</h3>
-              <p>
-                43 states, D.C., and Puerto Rico — powered by eight primary
-                entry gateways.
-              </p>
-              <p className="card-link">
-                <Link href="/coverage">View coverage →</Link>
-              </p>
-            </article>
-            <article className="feature-card">
-              <h3>FAQ</h3>
-              <p>
-                Tracking tips, delivery timelines, weekend service, and how to
-                reach SpeedX support.
-              </p>
-              <p className="card-link">
-                <Link href="/faq">Read FAQ →</Link>
-              </p>
-            </article>
-          </div>
-        </div>
-      </section>
+      <HomeSections />
     </main>
   );
 }

@@ -15,6 +15,7 @@ export const NAV_LINKS: NavLink[] = [
   { href: "/drive", label: "Drive With Us" },
   { href: "/contact", label: "Support" },
   { href: "/faq", label: "FAQ" },
+  { href: "/blogs", label: "Blogs" },
   { href: "/discovery", label: "Book Discovery" },
 ];
 
@@ -56,6 +57,7 @@ export const FOOTER_LINKS: {
     links: [
       { href: "/overview", label: "Official site (overview)" },
       { href: "/faq", label: "FAQ" },
+      { href: "/blogs", label: "Blogs" },
       { href: "/how-to-track", label: "How to Track" },
       { href: "/ship", label: "Ship With Us" },
     ],

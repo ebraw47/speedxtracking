@@ -22,6 +22,13 @@ export const SITEMAP_PAGES: SitemapPage[] = [
   { path: "/drive", changefreq: "monthly", priority: 0.6 },
   { path: "/contact", changefreq: "monthly", priority: 0.8 },
   { path: "/faq", changefreq: "weekly", priority: 0.8 },
+  { path: "/blogs", changefreq: "weekly", priority: 0.8 },
+  {
+    path: "/blogs/what-time-does-speedx-stop-delivering",
+    changefreq: "monthly",
+    priority: 0.7,
+    lastmod: "2026-08-25",
+  },
   { path: "/discovery", changefreq: "monthly", priority: 0.7 },
   { path: "/posts/for-retailers", changefreq: "monthly", priority: 0.7 },
   {

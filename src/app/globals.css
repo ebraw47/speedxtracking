@@ -530,8 +530,8 @@ a:hover {
 
 .hero-eyebrow {
   position: absolute;
+  top: 1.25rem;
   right: 1.25rem;
-  bottom: 1.25rem;
   z-index: 3;
   margin: 0;
 }
@@ -1026,8 +1026,8 @@ a:hover {
   }
 
   .hero-eyebrow {
+    top: 0.85rem;
     right: 0.85rem;
-    bottom: 0.85rem;
     font-size: 0.65rem;
     padding: 0.3rem 0.7rem;
   }

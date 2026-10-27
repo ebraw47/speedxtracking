@@ -129,7 +129,7 @@ export default function TrackingHero({ children }: { children: ReactNode }) {
             </Link>
             <a
               className="btn-app-store"
-              href="https://apps.apple.com/vn/app/speedx-tracking/id6762048489"
+              href="https://apps.apple.com/pk/app/speedx-tracking/id6762048489"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Download SpeedX Tracking on the App Store"

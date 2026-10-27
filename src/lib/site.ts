@@ -24,6 +24,12 @@ export const SITEMAP_PAGES: SitemapPage[] = [
   { path: "/faq", changefreq: "weekly", priority: 0.8 },
   { path: "/blogs", changefreq: "weekly", priority: 0.8 },
   {
+    path: "/blogs/does-speedx-deliver-on-sundays",
+    changefreq: "monthly",
+    priority: 0.7,
+    lastmod: "2026-08-25",
+  },
+  {
     path: "/blogs/how-late-does-speedx-deliver",
     changefreq: "monthly",
     priority: 0.7,

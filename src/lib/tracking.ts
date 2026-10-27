@@ -1,22 +1,42 @@
-export type TimelineEvent = {
+export type TrackerStep = {
+  key: "origin" | "transit" | "facility" | "destination";
   title: string;
-  detail: string;
-  active: boolean;
+  city?: string;
+  subtitle?: string;
+  done: boolean;
 };
 
-export type ShipmentStatus = {
-  label: string;
-  badge: string;
-  eta: string;
-  build: (h: number) => TimelineEvent[];
+export type TrackerEvent = {
+  time: string;
+  city: string;
+  status: string;
+  note?: string;
+  pod?: boolean;
+};
+
+export type TrackerDay = {
+  dateLabel: string;
+  events: TrackerEvent[];
 };
 
 export type Shipment = {
   tn: string;
   label: string;
-  badge: string;
-  eta: string;
-  events: TimelineEvent[];
+  progress: number; // 0–100 along the tracker path
+  steps: TrackerStep[];
+  recent: {
+    title: string;
+    note?: string;
+    datetime: string;
+    city: string;
+  };
+  days: TrackerDay[];
+  details: {
+    pickupDate: string;
+    deliveryDate: string;
+    pickupLocation: string;
+    dropoffLocation: string;
+  };
 };
 
 export function validTn(value: string): boolean {
@@ -38,219 +58,472 @@ function pick<T>(arr: T[], n: number): T {
   return arr[n % arr.length];
 }
 
-function formatWhen(daysAgo: number, hour: number, minute: number): string {
+const facilities = [
+  { city: "Montebello, CA", short: "Montebello, CA" },
+  { city: "Los Angeles, CA", short: "Los Angeles, CA" },
+  { city: "Dallas, TX", short: "Dallas, TX" },
+  { city: "Chicago, IL", short: "Chicago, IL" },
+  { city: "Newark, NJ", short: "Newark, NJ" },
+  { city: "Miami, FL", short: "Miami, FL" },
+  { city: "Atlanta, GA", short: "Atlanta, GA" },
+  { city: "Houston, TX", short: "Houston, TX" },
+];
+
+const destinations = [
+  { city: "VAN NUYS, CA", region: "US" },
+  { city: "LOS ANGELES, CA", region: "US" },
+  { city: "IRVINE, CA", region: "US" },
+  { city: "DALLAS, TX", region: "US" },
+  { city: "HOUSTON, TX", region: "US" },
+  { city: "CHICAGO, IL", region: "US" },
+  { city: "MIAMI, FL", region: "US" },
+  { city: "SEATTLE, WA", region: "US" },
+];
+
+const statuses = [
+  "Delivered",
+  "Out for Delivery",
+  "In Transit",
+  "Pending",
+  "Exception",
+  "Customs Hold",
+] as const;
+
+type StatusLabel = (typeof statuses)[number];
+
+function weekdayLabel(daysAgo: number): string {
   const d = new Date();
   d.setDate(d.getDate() - daysAgo);
-  d.setHours(hour, minute, 0, 0);
-  if (daysAgo === 0) {
-    return `Today, ${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
-  }
-  if (daysAgo === 1) {
-    return `Yesterday, ${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
-  }
-  return `${daysAgo} days ago · ${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+  return d.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
 }
 
-const hubs = [
-  "Los Angeles, CA",
-  "Dallas, TX",
-  "Chicago, IL",
-  "Newark, NJ",
-  "Miami, FL",
-  "Atlanta, GA",
-  "Houston, TX",
-  "San Francisco, CA",
-];
+function clock(hour: number, minute: number): string {
+  const h12 = ((hour + 11) % 12) + 1;
+  const ampm = hour >= 12 ? "PM" : "AM";
+  return `${String(h12).padStart(2, "0")}:${String(minute).padStart(2, "0")} ${ampm} PDT`;
+}
 
-const origins = [
-  "International gateway · Shenzhen",
-  "International gateway · Shanghai",
-  "Origin facility · Guangzhou",
-  "Export hub · Hong Kong",
-  "Origin sort center · Yiwu",
-];
+function fullDateTime(daysAgo: number, hour: number, minute: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() - daysAgo);
+  const month = d.toLocaleDateString("en-US", { month: "short" });
+  const day = d.getDate();
+  const year = d.getFullYear();
+  return `${month} ${day} ${year} at ${clock(hour, minute)}`;
+}
 
-const statuses: ShipmentStatus[] = [
-  {
-    label: "In Transit",
-    badge: "badge-transit",
-    eta: "Estimated delivery in 1–2 business days",
-    build(h) {
-      const hub = pick(hubs, h);
-      const origin = pick(origins, h >>> 3);
-      return [
-        {
-          title: `Arrived at regional sorting hub`,
-          detail: `${hub} · ${formatWhen(0, 8 + (h % 10), 10 + (h % 40))}`,
-          active: true,
-        },
-        {
-          title: "Departed origin facility",
-          detail: `${origin} · ${formatWhen(1 + (h % 2), 14 + (h % 6), h % 60)}`,
-          active: false,
-        },
-        {
-          title: "Shipment information received",
-          detail: `Label created · ${formatWhen(3 + (h % 3), 9, 5 + (h % 50))}`,
-          active: false,
-        },
-      ];
+function buildSteps(
+  status: StatusLabel,
+  facility: (typeof facilities)[number],
+  dest: (typeof destinations)[number],
+): { steps: TrackerStep[]; progress: number } {
+  const base: TrackerStep[] = [
+    { key: "origin", title: "Origin", done: false },
+    { key: "transit", title: "In Transit", done: false },
+    {
+      key: "facility",
+      title: "SpeedX Facility",
+      city: facility.short,
+      subtitle: "SpeedX Facility",
+      done: false,
     },
-  },
-  {
-    label: "Out for Delivery",
-    badge: "badge-ofd",
-    eta: "Expected today by 10:00 PM local time",
-    build(h) {
-      const hub = pick(hubs, h);
-      return [
-        {
-          title: "Out for delivery",
-          detail: `${hub} local route · ${formatWhen(0, 7 + (h % 5), 20 + (h % 30))}`,
-          active: true,
-        },
-        {
-          title: "Arrived at local delivery station",
-          detail: `${hub} · ${formatWhen(0, 5, 45)}`,
-          active: false,
-        },
-        {
-          title: "Departed regional sorting hub",
-          detail: `${pick(hubs, h + 1)} · ${formatWhen(1, 16, h % 60)}`,
-          active: false,
-        },
-        {
-          title: "Shipment information received",
-          detail: `Label created · ${formatWhen(4 + (h % 2), 11, 12)}`,
-          active: false,
-        },
-      ];
+    {
+      key: "destination",
+      title: dest.region,
+      city: dest.city,
+      subtitle: dest.region,
+      done: false,
     },
-  },
-  {
-    label: "Delivered",
-    badge: "badge-delivered",
-    eta: "Package marked delivered — check porch, lobby, or mailbox",
-    build(h) {
-      const hub = pick(hubs, h);
-      return [
+  ];
+
+  if (status === "Pending") {
+    return { steps: base, progress: 8 };
+  }
+  if (status === "Customs Hold") {
+    base[0].done = true;
+    return { steps: base, progress: 28 };
+  }
+  if (status === "In Transit") {
+    base[0].done = true;
+    base[1].done = true;
+    return { steps: base, progress: 48 };
+  }
+  if (status === "Out for Delivery" || status === "Exception") {
+    base[0].done = true;
+    base[1].done = true;
+    base[2].done = true;
+    return { steps: base, progress: 78 };
+  }
+  // Delivered
+  base.forEach((s) => {
+    s.done = true;
+  });
+  return { steps: base, progress: 100 };
+}
+
+function buildDays(
+  status: StatusLabel,
+  h: number,
+  facility: (typeof facilities)[number],
+  dest: (typeof destinations)[number],
+): TrackerDay[] {
+  const f = facility.city;
+  const d = dest.city;
+
+  if (status === "Pending") {
+    return [
+      {
+        dateLabel: weekdayLabel(0),
+        events: [
+          {
+            time: clock(10 + (h % 6), h % 60),
+            city: "Origin facility",
+            status: "Shipping Label Created",
+          },
+        ],
+      },
+    ];
+  }
+
+  if (status === "Customs Hold") {
+    return [
+      {
+        dateLabel: weekdayLabel(0),
+        events: [
+          {
+            time: clock(12 + (h % 5), 15),
+            city: "U.S. entry gateway",
+            status: "Held for customs clearance",
+          },
+        ],
+      },
+      {
+        dateLabel: weekdayLabel(2),
+        events: [
+          {
+            time: clock(6, 50),
+            city: "International gateway",
+            status: "Arrived at international gateway",
+          },
+          {
+            time: clock(21, 5),
+            city: "Origin country",
+            status: "Departed origin country",
+          },
+        ],
+      },
+      {
+        dateLabel: weekdayLabel(5),
+        events: [
+          {
+            time: clock(9, 20),
+            city: "Origin facility",
+            status: "Shipping Label Created",
+          },
+        ],
+      },
+    ];
+  }
+
+  if (status === "In Transit") {
+    return [
+      {
+        dateLabel: weekdayLabel(0),
+        events: [
+          {
+            time: clock(8 + (h % 8), 10 + (h % 40)),
+            city: f,
+            status: "In transit to destination facility",
+          },
+          {
+            time: clock(3, 45),
+            city: f,
+            status: "Processing at Designated Facility",
+          },
+        ],
+      },
+      {
+        dateLabel: weekdayLabel(1),
+        events: [
+          {
+            time: clock(17, 45),
+            city: f,
+            status: "Processing at Designated Facility",
+          },
+        ],
+      },
+      {
+        dateLabel: weekdayLabel(4),
+        events: [
+          {
+            time: clock(19, 20),
+            city: f,
+            status: "Shipping Label Created",
+          },
+        ],
+      },
+    ];
+  }
+
+  if (status === "Out for Delivery") {
+    return [
+      {
+        dateLabel: weekdayLabel(0),
+        events: [
+          {
+            time: clock(7 + (h % 4), 20 + (h % 30)),
+            city: d,
+            status: "Out for Delivery",
+          },
+        ],
+      },
+      {
+        dateLabel: weekdayLabel(1),
+        events: [
+          {
+            time: clock(2, 52),
+            city: f,
+            status: "In transit to destination facility",
+          },
+        ],
+      },
+      {
+        dateLabel: weekdayLabel(2),
+        events: [
+          {
+            time: clock(13, 52),
+            city: f,
+            status: "Processing at Designated Facility",
+          },
+          {
+            time: clock(3, 45),
+            city: f,
+            status: "In transit to destination facility",
+          },
+        ],
+      },
+      {
+        dateLabel: weekdayLabel(5),
+        events: [
+          {
+            time: clock(19, 20),
+            city: f,
+            status: "Shipping Label Created",
+          },
+        ],
+      },
+    ];
+  }
+
+  if (status === "Exception") {
+    return [
+      {
+        dateLabel: weekdayLabel(0),
+        events: [
+          {
+            time: clock(13, 30),
+            city: d,
+            status: "Delivery exception",
+            note: pick(
+              [
+                "Address incomplete or access code needed",
+                "Recipient unavailable — reattempt scheduled",
+                "No access to delivery location",
+              ],
+              h,
+            ),
+          },
+          {
+            time: clock(9, 10),
+            city: d,
+            status: "Out for Delivery",
+          },
+        ],
+      },
+      {
+        dateLabel: weekdayLabel(1),
+        events: [
+          {
+            time: clock(18, 22),
+            city: f,
+            status: "Arrived at local delivery station",
+          },
+        ],
+      },
+      {
+        dateLabel: weekdayLabel(4),
+        events: [
+          {
+            time: clock(8, 40),
+            city: f,
+            status: "Shipping Label Created",
+          },
+        ],
+      },
+    ];
+  }
+
+  // Delivered — matches official tracker layout
+  const deliverHour = 11 + (h % 8);
+  const deliverMin = 5 + (h % 50);
+  return [
+    {
+      dateLabel: weekdayLabel(0),
+      events: [
         {
-          title: "Delivered",
-          detail: `${hub} · ${formatWhen(0, 11 + (h % 8), 5 + (h % 50))} · POD on file`,
-          active: true,
+          time: clock(deliverHour, deliverMin),
+          city: d,
+          status: "Delivered",
+          note: "Position: Front door",
+          pod: true,
         },
         {
-          title: "Out for delivery",
-          detail: `${hub} · ${formatWhen(0, 8, 15)}`,
-          active: false,
+          time: clock(10, 13),
+          city: d,
+          status: "Out for Delivery",
         },
-        {
-          title: "Arrived at local delivery station",
-          detail: `${hub} · ${formatWhen(1, 19, 40)}`,
-          active: false,
-        },
-        {
-          title: "Shipment information received",
-          detail: `Label created · ${formatWhen(5 + (h % 3), 10, 0)}`,
-          active: false,
-        },
-      ];
+      ],
     },
-  },
-  {
-    label: "Pending",
-    badge: "badge-pending",
-    eta: "Waiting for first carrier scan — usually updates within 24–48 hours",
-    build(h) {
-      return [
+    {
+      dateLabel: weekdayLabel(1),
+      events: [
         {
-          title: "Shipment information received",
-          detail: `Label created · ${formatWhen(0, 10 + (h % 8), h % 60)}`,
-          active: true,
+          time: clock(2, 52),
+          city: f,
+          status: "In transit to destination facility",
         },
-        {
-          title: "Awaiting package handoff",
-          detail: `Seller / origin facility · Pending pickup`,
-          active: false,
-        },
-      ];
+      ],
     },
-  },
-  {
-    label: "Exception",
-    badge: "badge-exception",
-    eta: "Delivery issue — contact the seller with this tracking number",
-    build(h) {
-      const hub = pick(hubs, h);
-      const reasons = [
-        "Address incomplete or access code needed",
-        "Recipient unavailable — reattempt scheduled",
-        "Weather delay at regional hub",
-        "Customs documentation under review",
-      ];
-      return [
+    {
+      dateLabel: weekdayLabel(2),
+      events: [
         {
-          title: "Delivery exception",
-          detail: `${pick(reasons, h)} · ${hub} · ${formatWhen(0, 13, 30)}`,
-          active: true,
+          time: clock(13, 52),
+          city: f,
+          status: "Processing at Designated Facility",
         },
         {
-          title: "Out for delivery (attempted)",
-          detail: `${hub} · ${formatWhen(0, 9, 10)}`,
-          active: false,
+          time: clock(3, 45),
+          city: f,
+          status: "In transit to destination facility",
         },
-        {
-          title: "Arrived at local delivery station",
-          detail: `${hub} · ${formatWhen(1, 18, 22)}`,
-          active: false,
-        },
-        {
-          title: "Shipment information received",
-          detail: `Label created · ${formatWhen(4, 8, 40)}`,
-          active: false,
-        },
-      ];
+      ],
     },
-  },
-  {
-    label: "Customs Hold",
-    badge: "badge-customs",
-    eta: "Common on international orders — often clears within a few days",
-    build(h) {
-      return [
+    {
+      dateLabel: weekdayLabel(3),
+      events: [
         {
-          title: "Held for customs clearance",
-          detail: `U.S. entry gateway · ${formatWhen(0, 12 + (h % 6), 15)}`,
-          active: true,
+          time: clock(17, 45),
+          city: f,
+          status: "Processing at Designated Facility",
         },
-        {
-          title: "Arrived at international gateway",
-          detail: `Inbound freight · ${formatWhen(1, 6, 50)}`,
-          active: false,
-        },
-        {
-          title: "Departed origin country",
-          detail: `${pick(origins, h)} · ${formatWhen(2 + (h % 2), 21, 5)}`,
-          active: false,
-        },
-        {
-          title: "Shipment information received",
-          detail: `Label created · ${formatWhen(5, 9, 20)}`,
-          active: false,
-        },
-      ];
+      ],
     },
-  },
-];
+    {
+      dateLabel: weekdayLabel(6),
+      events: [
+        {
+          time: clock(19, 20),
+          city: f,
+          status: "Shipping Label Created",
+        },
+      ],
+    },
+  ];
+}
+
+function buildRecent(
+  status: StatusLabel,
+  h: number,
+  days: TrackerDay[],
+  dest: (typeof destinations)[number],
+): Shipment["recent"] {
+  const first = days[0]?.events[0];
+  if (status === "Delivered") {
+    return {
+      title: "Last Mile Delivered",
+      note: first?.note ?? "Position: Front door",
+      datetime: fullDateTime(0, 11 + (h % 8), 5 + (h % 50)),
+      city: dest.city,
+    };
+  }
+  if (status === "Out for Delivery") {
+    return {
+      title: "Out for Delivery",
+      note: "A delivery driver has your package and it is on its way.",
+      datetime: fullDateTime(0, 7 + (h % 4), 20 + (h % 30)),
+      city: dest.city,
+    };
+  }
+  if (status === "Exception") {
+    return {
+      title: "Delivery Exception",
+      note: first?.note,
+      datetime: fullDateTime(0, 13, 30),
+      city: dest.city,
+    };
+  }
+  if (status === "Customs Hold") {
+    return {
+      title: "Customs Hold",
+      note: "Held for customs clearance",
+      datetime: fullDateTime(0, 12 + (h % 5), 15),
+      city: "U.S. entry gateway",
+    };
+  }
+  if (status === "Pending") {
+    return {
+      title: "Shipping Label Created",
+      note: "Label created — awaiting package handoff",
+      datetime: fullDateTime(0, 10 + (h % 6), h % 60),
+      city: "Origin facility",
+    };
+  }
+  return {
+    title: first?.status ?? "In Transit",
+    note: first?.note,
+    datetime: fullDateTime(0, 8 + (h % 8), 10 + (h % 40)),
+    city: first?.city ?? dest.city,
+  };
+}
 
 export function buildShipment(tn: string): Shipment {
   const h = hashTn(tn.toUpperCase());
   const status = statuses[h % statuses.length];
+  const facility = pick(facilities, h);
+  const dest = pick(destinations, h >>> 2);
+  const { steps, progress } = buildSteps(status, facility, dest);
+  const days = buildDays(status, h, facility, dest);
+  const recent = buildRecent(status, h, days, dest);
+
+  const pickupStamp = (() => {
+    const d = new Date();
+    d.setDate(d.getDate() - 2);
+    const month = d.toLocaleDateString("en-US", { month: "short" });
+    return `13:52:14 ${month} ${d.getDate()} ${d.getFullYear()} PDT`;
+  })();
+
   return {
     tn: tn.toUpperCase(),
-    label: status.label,
-    badge: status.badge,
-    eta: status.eta,
-    events: status.build(h),
+    label: status,
+    progress,
+    steps,
+    recent,
+    days,
+    details: {
+      pickupDate: status === "Pending" ? "—" : pickupStamp,
+      deliveryDate:
+        status === "Delivered"
+          ? recent.datetime
+          : status === "Out for Delivery"
+            ? "Expected today"
+            : "Pending",
+      pickupLocation: facility.city,
+      dropoffLocation: dest.city,
+    },
   };
 }

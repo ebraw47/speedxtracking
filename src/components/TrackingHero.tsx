@@ -106,26 +106,50 @@ export default function TrackingHero({ children }: { children: ReactNode }) {
             </div>
           </div>
 
-          <Link
-            href="/discovery"
-            className="btn-discovery btn-discovery-hero hero-discovery-cta"
-          >
-            Book a discovery call
-            <svg
-              className="hero-discovery-arrow"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
+          <div className="hero-cta-row">
+            <Link
+              href="/discovery"
+              className="btn-discovery btn-discovery-hero hero-discovery-cta"
             >
-              <path
-                d="M12 5v14M5 12l7 7 7-7"
-                stroke="currentColor"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Link>
+              Book a discovery call
+              <svg
+                className="hero-discovery-arrow"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M12 5v14M5 12l7 7 7-7"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </Link>
+            <a
+              className="btn-app-store"
+              href="https://apps.apple.com/vn/app/speedx-tracking/id6762048489"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Download SpeedX Tracking on the App Store"
+            >
+              <svg
+                className="btn-app-store-icon"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M16.365 1.43c0 1.14-.415 2.21-1.207 3.01-.85.87-2.26 1.54-3.44 1.45-.15-1.1.43-2.26 1.2-3.05.86-.9 2.34-1.55 3.447-1.41zM20.69 17.4c-.54 1.2-.8 1.73-1.5 2.79-.97 1.45-2.34 3.26-4.04 3.28-1.51.02-1.9-.98-3.96-.97-2.05.01-2.48.99-3.99.97-1.7-.02-3-1.65-3.97-3.1C1.57 17.3.3 12.7 2.4 9.6c1.05-1.55 2.72-2.53 4.3-2.53 1.7 0 2.77 1 4.17 1 1.35 0 2.17-1 4.2-1 1.42 0 2.92.77 3.98 2.1-3.5 1.92-2.93 6.93 1.64 8.23z"
+                />
+              </svg>
+              <span className="btn-app-store-copy">
+                <span className="btn-app-store-eyebrow">Download on the</span>
+                <span className="btn-app-store-name">App Store</span>
+              </span>
+            </a>
+          </div>
         </div>
       </section>
 

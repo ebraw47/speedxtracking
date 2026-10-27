@@ -627,7 +627,7 @@ a:hover {
     justify-self: start;
   }
 
-  .hero-discovery-cta {
+  .hero-cta-row {
     grid-column: 1;
     grid-row: 4;
     justify-self: start;
@@ -799,11 +799,19 @@ a:hover {
   color: #041018 !important;
 }
 
+.hero-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.15rem;
+}
+
 .hero-discovery-cta {
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  margin-top: 1.15rem;
+  margin-top: 0;
   text-decoration: none;
 }
 
@@ -811,6 +819,54 @@ a:hover {
   width: 1.05rem;
   height: 1.05rem;
   flex-shrink: 0;
+}
+
+.btn-app-store {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 3.15rem;
+  padding: 0.45rem 1.05rem 0.45rem 0.85rem;
+  border-radius: 999px;
+  background: #05070c;
+  color: #fff !important;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+  transition: transform 0.2s var(--ease), filter 0.2s ease;
+}
+
+.btn-app-store:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  color: #fff !important;
+}
+
+.btn-app-store-icon {
+  width: 1.55rem;
+  height: 1.55rem;
+  flex-shrink: 0;
+}
+
+.btn-app-store-copy {
+  display: grid;
+  gap: 0.05rem;
+  line-height: 1.05;
+  text-align: left;
+}
+
+.btn-app-store-eyebrow {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  opacity: 0.85;
+}
+
+.btn-app-store-name {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
 }
 
 .hero-stats {
@@ -936,10 +992,11 @@ a:hover {
       rgba(7, 11, 20, 0.32);
   }
 
-  .hero-discovery-cta {
+  .hero-cta-row {
     order: 4;
     margin-top: 0.85rem;
     margin-inline: auto;
+    justify-content: center;
   }
 
   .hero-stats {
